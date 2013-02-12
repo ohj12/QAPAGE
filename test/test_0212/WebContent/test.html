@@ -1,0 +1,433 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=EUC-KR">
+<title>Test Page</title>
+<link rel="stylesheet" type="text/css" href="css/layout.css"/>
+<link rel="stylesheet" type="text/css" href="css/boardlayout.css"/>
+
+</head>
+<body>
+<!-- test body -->
+
+
+<div id="wapper">
+
+<!--헤더시작-->
+<header>
+<h1>QABOARD DRAFT PAGE</h1>
+<p>header</p>
+</header>
+<!--네비게이션-->
+<nav>
+<p>nav</p>
+</nav>
+<!--사이드바-->
+<aside>
+<p>aside</p>
+<ul>
+<li><a href="">link1</a></li>
+<li><a href="">link2</a></li>
+<li><a href="">link3</a></li>
+</ul>
+</aside>
+<!--콘텐츠부분-->
+<section>
+<p>section</p>
+<article>
+
+
+
+</article> 
+</section>
+<!--풋터-->
+<footer>footer</footer>
+</div>
+
+
+<!-- test body -->
+
+
+<script type="text/JavaScript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script> 
+<script type="text/JavaScript">
+var form1;
+var tableframe;
+var writeframe;
+var count = 0;
+
+$(document).ready(function(){
+	form1 = $('<form></form>');
+	form1.attr('name','form1');
+	makeActionBtn('테이블초기화','dbInit();').appendTo(form1);
+	makeActionBtn('테이블드랍','dbDrop();').appendTo(form1);
+	makeActionBtn('인서트','insertQuestion();').appendTo(form1);
+	makeActionBtn('답변숨기기테스트','testHideA(0);').appendTo(form1);
+	makeActionBtn('답변보이기테스트','testShowA(0);').appendTo(form1);
+	makeActionBtn('객체테스트버튼','testOBJ(this);').appendTo(form1);
+	makeActionBtn('질문select','selectQuestion();').appendTo(form1);
+	makeActionBtn('글쓰기테스트','openWriteWindow();').appendTo(form1);
+	makeActionBtn('수정하기테스트','openModifyWindow();').appendTo(form1);
+	form1.appendTo('nav');
+	
+	
+	tableframe = drawTableFrame().appendTo($('article'));
+	var set = $('<tr><td></td></tr>').appendTo(tableframe);
+	set.attr('class','qaset');
+	
+	drawTableQ().appendTo(set);
+	drawTableA().appendTo(set);
+	
+	set = $('<tr><td></td></tr>').appendTo(tableframe);
+	set.attr('class','qaset');
+	
+	drawTableQ().appendTo(set);
+	drawTableA().appendTo(set);
+	drawTableA().appendTo(set);
+
+	
+	set = $('<tr><td></td></tr>').appendTo(tableframe);
+	set.attr('class','qaset');
+	
+	drawTableQ().appendTo(set);
+	drawTableA().appendTo(set);
+	
+	set = $('<tr><td></td></tr>').appendTo(tableframe);
+	set.attr('class','qaset');
+	
+	drawTableQ().appendTo(set);
+	drawTableA().appendTo(set);
+	
+	set = $('<tr><td></td></tr>').appendTo(tableframe);
+	set.attr('class','qaset');
+	
+	drawTableQ().appendTo(set);
+	drawTableA().appendTo(set);
+	
+	
+	writeframe = createWriteFrame().appendTo($('article'));
+	writeframe.hide();
+	
+});
+
+</script>
+<script type="text/JavaScript"> //dom 핸들
+function openWriteWindow(){
+	this.tableframe.hide();
+	this.writeframe.show();
+}
+function closeWriteWindow(){
+	this.tableframe.show();
+	this.writeframe.hide();
+}
+function sendArticle(){
+	alert("글쓰기 미구현 보냈다고 가정");
+	closeWriteWindow();
+}
+
+
+function openModifyWindow(){
+	closeModifyWindow();
+}
+function closeModifyWindow(){
+	alert("미구현");
+}
+
+
+function createWriteFrame(){
+	var frame;
+	var tdata;
+	
+	frame = $('<table></table>');
+	frame.attr('class','writewindow');
+	
+	tdata = $('<tr><td></td></tr>').children('td');
+	tdata.text('임시 글쓰기 페이지');
+	tdata.css('font-size','30px');
+	tdata.end().appendTo(frame);
+	
+	tdata = $('<tr><td></td></tr>').children('td');
+	$('<input type="button" value="쓰기(미구현)" onClick="sendArticle();">').appendTo(tdata);
+	$('<input type="button" value="닫기" onClick="closeWriteWindow();">').appendTo(tdata);
+	tdata.end().appendTo(frame);
+	
+	tdata = $('<tr><td></td></tr>').children('td');
+	//$('<input class="in_body" type="text" value="미구현">').appendTo(tdata);
+	$('<textarea rows="25" cols="80" name="in_body">미구현</textarea>').appendTo(tdata);
+	tdata.end().appendTo(frame);
+	
+	
+	return frame;
+}
+
+function testOBJ(po){
+	alert(	$(po).show()	);
+	//alert($('this'));
+}
+function testHideA(index){
+	$('.qaset:eq(' + index +')').find('.answindow').hide();
+}
+function testShowA(index){
+	$('.qaset:eq(' + index +')').find('.answindow').show();
+}
+
+
+function makeActionBtn(text, callfunc){
+	var btn = $('<input type="button" value="' + text + '" onClick="' + callfunc +'">')
+	return btn;
+}
+
+function drawTableFrame(){
+	var tableframe = $('<table></table>');
+	tableframe.attr('class','tableframe')
+	return tableframe;
+}
+
+
+
+function drawTableQ(){
+	var tdata;
+	var pointer;
+	
+	var table = drawTable();
+	table.attr('class','quewindow');
+	
+	pointer = table.find('.first').children().first();
+	pointer.text('Q');
+	
+	trow = $('<tr></tr>');
+	trow.attr('class','under');
+	
+	tdata = $('<td></td>');
+	tdata.attr('colspan','10');
+	tdata.text("총 000개의 답변이 있습니다. (펼쳐보기)");
+	
+	tdata.appendTo(trow);
+	trow.appendTo(table);
+	
+	
+	return table;
+}
+
+function drawTableA(){
+	//alert("A");
+	var tdata;
+	var table = drawTable();
+	table.attr('class','answindow');
+	
+	tdata = $('<th></th>');
+	tdata.attr('class','padding')
+	tdata.attr('width','30');
+	tdata.attr('rowspan','3');
+	
+	var pointer = table.find('.first').children().first();
+	pointer.text('A');
+	pointer.before(tdata);
+	
+	return table;
+}
+
+function drawTable(){
+	
+	var pointer;
+	
+	var table = $('<table></table>');
+	
+	var trow;
+	var tdata;
+	
+	//first line
+	trow = $('<tr class="first"></tr>'); 
+	
+	tdata = $('<th></th>');
+	tdata.attr('width','30');
+	tdata.attr('rowspan','3');
+	//tdata.text('Q or A');
+	tdata.appendTo(trow);
+	
+	tdata = $('<th></th>');
+	tdata.attr('class','title')
+	tdata.attr('colspan','7');
+	tdata.text('null title');
+	tdata.appendTo(trow);
+	
+	
+	tdata = $('<th></th>');
+	tdata.attr('width','40');
+	tdata.text('수정');
+	tdata.appendTo(trow);
+	
+	tdata = $('<th></th>');
+	tdata.attr('width','30');
+	tdata.text('삭제');
+	tdata.appendTo(trow);
+
+	trow.appendTo(table);
+	
+	//second line
+	trow = $('<tr></tr>');
+	
+	tdata = $('<th></th>');
+	tdata.text('No'); 	
+	tdata.appendTo(trow);
+	
+	tdata = $('<th></th>');
+	tdata.attr('class','no')
+	tdata.text('0'); //numberic 	
+	tdata.appendTo(trow);
+	
+	tdata = $('<th></th>');
+	tdata.text('작성자'); 	
+	tdata.appendTo(trow);
+	
+	tdata = $('<th></th>');
+	tdata.attr('class','user')
+	tdata.attr('colspan','2');
+	tdata.text('ohj12'); //user 	
+	tdata.appendTo(trow);
+	
+	tdata = $('<th></th>');
+	tdata.text('날짜'); 	
+	tdata.appendTo(trow);
+	
+	tdata = $('<th></th>');
+	tdata.attr('class','date')
+	tdata.text('1234-56-78'); //date milis convert 	
+	tdata.appendTo(trow);
+	
+	tdata = $('<th></th>');
+	tdata.text('조회수'); 	
+	tdata.appendTo(trow);
+	
+	tdata = $('<th></th>');
+	tdata.attr('class','read')
+	tdata.attr('width','30');
+	tdata.text('15'); //numberic
+	tdata.appendTo(trow);
+	
+	trow.appendTo(table);
+	
+	//body line
+	trow = $('<tr></tr>');
+	trow.attr('class','alt')
+	
+	tdata = $('<td></td>');
+	tdata.attr('class','body')
+	tdata.attr('colspan','9');
+	tdata.text('test texta'); 	
+	tdata.appendTo(trow);
+
+	trow.appendTo(table);
+	
+	return table;
+}
+
+</script>
+<script type="text/JavaScript"> //db 핸들
+function dbInit(){
+	alert("dbInit진입");
+	var dbhandle = openDatabase('qaboard', '1', 'qaboard database', 1024 * 1024);
+	
+	var context = 'CREATE TABLE IF NOT EXIST que('
+	 + 'no INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,'
+	 + 'user VARCHAR(20) NOT NULL,'
+	 + 'title VARCHAR(50) NOT NULL,'
+	 + 'body TEXT NOT NULL,'
+	 + 'date INTEGER NOT NULL,'
+	 + 'pw CHAR(4) NOT NULL,'
+	 + 'read INTEGER NOT NULL'
+	 + ')';
+	
+	
+	dbhandle.transaction(function (tx) {
+		tx.executeSql(context);
+	});
+}
+function dbDrop(){
+	alert("dbDrop진입");
+	var dbhandle = openDatabase('qaboard', '1', 'qaboard database', 2 * 1024 * 1024);
+	
+	var context = 'DROP TABLE IF EXISTS que';
+	dbhandle.transaction(function (tx) {
+		tx.executeSql(context);
+	});
+}
+function insertQuestion(postfix){
+	alert("insertQuestion진입");
+	var dbhandle = openDatabase('qaboard', '1', 'qaboard database', 2 * 1024 * 1024);
+	/*
+	var vmap = {};
+	vmap['user'] = 'ohj';
+	vmap['title'] = 'test title';
+	vmap['body'] = 'test body';
+	vmap['date'] = '1234567890';
+	vmap['pw'] = 'testpw';
+	vmap['read'] = '5';
+	*/
+	var vmap = {};
+	vmap['user'] = 'ohj' + this.count;
+	vmap['title'] = 'test title' + this.count;
+	vmap['body'] = 'test body' + this.count + '\n' + 'test body' + this.count + '\n' + 'test body' + this.count + '\n' + 'test body' + this.count + '\n';
+	vmap['date'] = '1234567890';
+	vmap['pw'] = 'testpw' + this.count;
+	vmap['read'] = '5';
+	this.count++;
+
+	
+	dbhandle.transaction(function (tx) {
+		tx.executeSql('INSERT INTO que VALUES('
+				+ 'null, "' 
+				+ vmap['user'] + '","' 
+				+ vmap['title'] + '", "' 
+				+ vmap['body'] + '", '
+				+ vmap['date'] +', "' 
+				+ vmap['pw'] + '", '
+				+ vmap['read'] +')');
+	});
+
+}
+
+function selectQuestion(){
+	alert("selectQuestion진입");
+
+	var dbhandle = openDatabase('qaboard', '1', 'qaboard database', 2 * 1024 * 1024);
+	var qasethandle = $('.qaset');
+	
+	
+	dbhandle.transaction(function (tx) {
+		tx.executeSql('SELECT * FROM que ', [],function(tx,result){
+				var rows = result.rows;
+				var pointer;
+				for(var i = 0; i < qasethandle.length; i++){
+					var quewindow = qasethandle.eq(i).find('.quewindow');
+					var rowitem = rows.item(i);
+					//alert(qasethandle.get(i).hasChildNodes());
+					
+					alert(
+						rowitem['no'] + ' / ' 
+						+ rowitem['user'] + ' / ' 
+						+ rowitem['title'] + ' / ' 
+						+ rowitem['body'] + ' / ' 
+						+ rowitem['date'] + ' / ' 
+						+ rowitem['pw'] + ' / ' 
+						+ rowitem['read']
+					);//end alert
+					
+					quewindow.find('.title').text(rowitem['title']);
+					quewindow.find('.no').text(rowitem['no']);
+					quewindow.find('.user').text(rowitem['user']);
+					quewindow.find('.date').text(rowitem['date']);
+					quewindow.find('.read').text(rowitem['read']);
+					quewindow.find('.body').html(rowitem['body'].replace(/\n/gi, "<br>"));
+					
+				}
+		
+			} //end callback
+		);
+	});
+}
+
+ 
+</script>
+</body>
+</html>
+ 

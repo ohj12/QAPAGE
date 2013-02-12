@@ -1,0 +1,57 @@
+@CHARSET "EUC-KR";
+
+		table.quewindow {
+         width: 655px;
+         border-collapse: collapse;
+         text-align: center;
+         font-family: 'Trebuchet MS';
+       }
+       table.quewindow td, th {
+         border: 0px solid #98bf21;
+         height: 30px;
+       }
+       table.quewindow th {
+         background-color: #A7C942;
+         color: #ffffff;
+         font-family: Georgia;
+       }
+       table.quewindow tr.alt td {
+         color: #000000;
+         background-color: #EAF2D3;
+       }
+       table.quewindow tr.answindowwerbar td {
+         height: 8px;
+         background-color: #FFAAAA;
+       }
+       table.quewindow tr.under td {
+         height: 8px;
+         background-color: #FF0000;
+       }
+       
+       table.answindow {
+         width: 655px;
+         border-collapse: collapse;
+         text-align: center;
+         font-family: 'Trebuchet MS';
+       }
+       table.answindow td, th {
+         border: 0px solid #98bf21;
+         height: 30px;
+       }
+       table.answindow th {
+         background-color: #55AA55;
+         color: #ffffff;
+         font-family: Georgia;
+       }
+       table.answindow tr.alt td {
+         color: #FFFFFF;
+         background-color: #000000;
+       }
+       table.answindow tr.answindowwerbar td {
+         height: 8px;
+         background-color: #FFAAAA;
+       }
+       
+       table.answindow tr th.padding{
+		background-color: #FFFFFF;
+		}
