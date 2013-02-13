@@ -1,4 +1,16 @@
-﻿@ QABoard 페스트 페이지 제작중, javascript 및 jquery 학습
+﻿@ QABoard 페스트 페이지 제작중, javascript 및 jquery, SQLite 학습
+# 2013년 2월 13일
+- QABoard 기능 구현을 위한 테스트 페이지 제작중
+- DB 구조 일부 변경
+- DB로부터 질문, 답변 게시물 로드 및 표시, 페이지 이동 구현
+- 질문, 답변 DB 추가 기능 구현
+- 답변 열기 및 닫기 구현
+- JQuery 선택자 및 연산자, 자식요소 및 부모요소, 레퍼셋트 접근 학습
+- SQLite Trigger 학습
+- test/test_0213 폴더에 작업물 저장
+.
+
+@ QABoard 페스트 페이지 제작중, javascript 및 jquery 학습
 # 2013년 2월 12일
 - QABoard 기능 구현을 위한 테스트 페이지 제작중
 - 대략적인 레이아웃 초안 작성
@@ -14,8 +26,8 @@
 - QABoard 개발 계획서 업로드
 - 페이지 레이아웃 및 기능, DB 구조 정의
 - 초안으로써 계속하여 수정 예정.
-
 .
+
 @ 질문 답변 페이지 Repository 생성
 # 2013년 2월 6일
 - 새로운 Repository 생성
