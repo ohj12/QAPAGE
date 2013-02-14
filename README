@@ -1,4 +1,14 @@
 ﻿@ QABoard 페스트 페이지 제작중, javascript 및 jquery, SQLite 학습
+# 2013년 2월 14일
+- 날짜 입출력 구현
+- 페이지 구현 보정
+- 페이지 점프 구현중
+- 검색기능 구현
+- JQuery 선택자 및 연산자, 자식요소 및 부모요소, 레퍼셋트 접근 학습
+- CSS 학습
+.
+
+@ QABoard 페스트 페이지 제작중, javascript 및 jquery, SQLite 학습
 # 2013년 2월 13일
 - QABoard 기능 구현을 위한 테스트 페이지 제작중
 - DB 구조 일부 변경
