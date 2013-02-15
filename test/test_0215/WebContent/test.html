@@ -1,0 +1,1570 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=EUC-KR">
+<title>Test Page</title>
+<link rel="stylesheet" type="text/css" href="css/layout.css"/>
+<link rel="stylesheet" type="text/css" href="css/boardlayout.css"/>
+
+</head>
+<body>
+<!-- test body -->
+
+
+<div id="wapper">
+
+<!--헤더시작-->
+<header>
+<h1>QABOARD DRAFT PAGE</h1>
+<p>header</p>
+</header>
+<!--네비게이션-->
+<nav>
+<p>nav</p>
+</nav>
+<!--사이드바-->
+<aside>
+<p>aside</p>
+<ul>
+<li><a href="">새글쓰기</a></li>
+<li><a href="">검색</a></li>
+<li><a href="">총게시글 수</a></li>
+<li><a href="">????? 추가예정</a></li>
+</ul>
+</aside>
+<!--콘텐츠부분-->
+<section>
+<p>section</p>
+<article>
+
+
+
+</article> 
+</section>
+<!--풋터-->
+<footer>footer</footer>
+</div>
+
+
+<!-- test body -->
+
+
+<script type="text/JavaScript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script> 
+<script type="text/JavaScript">
+var form1;
+var tableframe;
+var writeframe;
+var searchframe;
+var underbarframe;
+
+var limiter = 5;
+var searchkey = "";
+var curpage = -1;
+
+$(document).ready(function(){
+	form1 = $('<form></form>');
+	form1.attr('name','form1');
+	makeActionBtn('테이블초기화','dbInit();').appendTo(form1);
+	makeActionBtn('테이블드랍','dbDrop();').appendTo(form1);
+	makeActionBtn('인서트질문','insertQuestion();').appendTo(form1);
+	makeActionBtn('인서트답변','insertAnswer(0);').appendTo(form1);
+	makeActionBtn('답변닫기테스트','testHideA(0);').appendTo(form1);
+	makeActionBtn('답변보이기테스트','testShowA(0);').appendTo(form1);
+	makeActionBtn('객체테스트버튼','testOBJ(this);').appendTo(form1);
+	makeActionBtn('페이지->','selectQuestion();').appendTo(form1);
+	makeActionBtn('<-페이지','selectQuestionBack();').appendTo(form1);
+	makeActionBtn('페이지->->','selectQuestion(3);').appendTo(form1);
+	makeActionBtn('<-<-페이지','selectQuestionBack(3);').appendTo(form1);
+	makeActionBtn('페이지리프레쉬','selectQuestionRefresh();').appendTo(form1);
+	makeActionBtn('답변select','selectAnswer(0);').appendTo(form1);
+	makeActionBtn('글쓰기테스트','openQWriteWindow();').appendTo(form1);
+	makeActionBtn('수정하기테스트','openModifyWindow();').appendTo(form1);
+	form1.appendTo('nav');
+	
+	tableframe = drawTableFrame().appendTo($('article'));
+	underbarframe = drawUnderbar().appendTo($('article'));
+	
+	searchframe = drawSearchFrame().appendTo($('aside'));
+	/*
+	var set = $('<tr><td></td></tr>').appendTo(tableframe);
+	set.attr('class','qaset');
+	
+	drawTableQ().appendTo(set);
+	//drawTableA().appendTo(set);
+	
+	set = $('<tr><td></td></tr>').appendTo(tableframe);
+	set.attr('class','qaset');
+	
+	drawTableQ().appendTo(set);
+	//drawTableA().appendTo(set);
+	//drawTableA().appendTo(set);
+
+	
+	set = $('<tr><td></td></tr>').appendTo(tableframe);
+	set.attr('class','qaset');
+	
+	drawTableQ().appendTo(set);
+	//drawTableA().appendTo(set);
+	
+	set = $('<tr><td></td></tr>').appendTo(tableframe);
+	set.attr('class','qaset');
+	
+	drawTableQ().appendTo(set);
+	//drawTableA().appendTo(set);
+	
+	set = $('<tr><td></td></tr>').appendTo(tableframe);
+	set.attr('class','qaset');
+	
+	drawTableQ().appendTo(set);
+	//drawTableA().appendTo(set);
+	*/
+	
+	writeframe = createWriteFrame().appendTo($('article'));
+	writeframe.hide();
+	
+	
+	
+	var footer = $('footer');
+	var footertable = $('<table><tr></tr></table>');
+	var footertablecontent = footertable.children().eq(0);
+	
+	var testwq = $('<td></td>');
+	testwq.attr('class','testWQ');
+	$('<input type="text" value="제목" class="title"><p>').appendTo(testwq);
+	$('<input type="text" value="이름" class="user"><p>').appendTo(testwq);
+	$('<input type="text" value="pw" class="pw"><p>').appendTo(testwq);
+	$('<textarea rows="5" cols="30" class="body">샘플입력</textarea><p>').appendTo(testwq);
+	var wbtn = $('<input type="button" value="질문쓰기"><p>')
+	wbtn.click(function(){
+		var vmap = {};
+		vmap['title'] = testwq.find('.title').val();
+		vmap['user'] = testwq.find('.user').val();
+		vmap['pw'] = testwq.find('.pw').val();
+		vmap['body'] = testwq.find('.body').val();
+
+		insertQuestion(vmap);
+	});
+	wbtn.appendTo(testwq);
+	testwq.appendTo(footertablecontent);
+	
+	
+	var testwa = $('<td></td>');
+	testwa.attr('class','testWA');
+	$('<input type="text" value="0" class="refer" onKeyPress="if ((event.keyCode < 48) || (event.keyCode > 57)){event.returnValue = false;};" ><p>').appendTo(testwa);
+	$('<input type="text" value="제목" class="title"><p>').appendTo(testwa);
+	$('<input type="text" value="이름" class="user"><p>').appendTo(testwa);
+	$('<input type="text" value="pw" class="pw"><p>').appendTo(testwa);
+	$('<textarea rows="5" cols="30" class="body">샘플입력</textarea><p>').appendTo(testwa);
+	var wbtn2 = $('<input type="button" value="답변쓰기"><p>')
+	wbtn2.click(function(){
+		var vmap = {};
+		vmap['refer'] = testwa.find('.refer').val();
+		vmap['title'] = testwa.find('.title').val();
+		vmap['user'] = testwa.find('.user').val();
+		vmap['pw'] = testwa.find('.pw').val();
+		vmap['body'] = testwa.find('.body').val();
+	
+		insertAnswer(vmap);
+	});
+	wbtn2.appendTo(testwa);
+	testwa.appendTo(footertablecontent);
+	
+	//footertable.appendTo(footer);
+	//drawAnswerWriteWindow().appendTo(footer);
+	
+	selectQuestion();
+});
+
+</script>
+<script type="text/JavaScript"> //dom 핸들
+function drawAnswerWriteWindow(refer){	
+	var frame = $('<table></table>');
+	frame.attr('class','answerwritewindow')
+	frame.css('width','100%');
+	frame.css('text-align','left');
+	
+	var trow;
+	var tdata;
+	
+	trow = $('<tr></tr>');
+	tdata = $('<td>새 답변 작성창</td>');
+	tdata.attr('colspan','2');
+	trow.css('text-align','center');
+	tdata.appendTo(trow);
+	trow.appendTo(frame);
+	
+	trow = $('<tr></tr>');
+	tdata = $('<td>제목 </td>');
+	tdata.appendTo(trow);
+	tdata = $('<input type="text" class="title">');
+	tdata.appendTo(trow);
+	trow.appendTo(frame);
+	
+	trow = $('<tr></tr>');
+	tdata = $('<td>이름 </td>');
+	tdata.appendTo(trow);
+	tdata = $('<input type="text" class="user">');
+	tdata.appendTo(trow);
+	trow.appendTo(frame);
+	
+	trow = $('<tr></tr>');
+	tdata = $('<td>암호 </td>');
+	tdata.appendTo(trow);
+	tdata = $('<input type="text" class="pw">');
+	tdata.appendTo(trow);
+	trow.appendTo(frame);
+	
+	trow = $('<tr></tr>');
+	tdata = $('<td>내용 </td>');
+	tdata.appendTo(trow);
+	tdata = $('<textarea rows="5" cols="30" class="body">샘플입력</textarea><p>');
+	tdata.appendTo(trow);
+	trow.appendTo(frame);
+	
+	trow = $('<tr></tr>');
+	trow.css('text-align','center');
+	tdata = $('<td></td>');
+	var writeobj = $('<a>쓰기</a>');
+	writeobj.click(function(){
+		alert('쓰기');
+		
+		var vmap = {};
+		vmap['refer'] = refer;
+		vmap['title'] = frame.find('.title').val();
+		vmap['user'] = frame.find('.user').val();
+		vmap['pw'] = frame.find('.pw').val();
+		vmap['body'] = frame.find('.body').val();
+	
+		insertAnswer(vmap);
+	});
+	writeobj.appendTo(tdata);
+	
+	$('<a>&emsp;&emsp;&emsp;&emsp;&emsp;</a>').appendTo(tdata);
+	
+	var closeobj = $('<a>닫기</a>');
+	closeobj.click(function(){
+		frame.remove();
+		//alert($('footer').html());
+	});
+	closeobj.appendTo(tdata);
+	
+	tdata.attr('colspan','2');
+	tdata.appendTo(trow);
+	trow.appendTo(frame);
+	
+	
+	frame.css('border-collapse','collapse');
+	frame.find('tr').css('background-color','#BBBBBB');
+	frame.find('td').css('background-color','#BBBBBB');
+	frame.find('tr').first().css('background-color','#777777');
+	frame.find('td').first().css('background-color','#777777');
+	frame.find('tr').last().css('background-color','#777777');
+	frame.find('td').last().css('background-color','#777777');
+	
+	return frame;
+}
+
+
+function openQWriteWindow(){
+	this.tableframe.hide();
+	this.underbarframe.hide();
+	this.writeframe.show();
+}
+function closeWriteWindow(){
+	this.tableframe.show();
+	this.underbarframe.show();
+	this.writeframe.hide();
+}
+function sendArticle(){
+	//alert("글쓰기 미구현 보냈다고 가정");
+	closeWriteWindow();
+}
+
+
+function openModifyWindow(){
+	closeModifyWindow();
+}
+function closeModifyWindow(){
+	//alert("미구현");
+}
+
+
+function createWriteFrame(){
+	/*
+	var frame;
+	var tdata;
+	
+	frame = $('<table></table>');
+	frame.attr('class','writewindow');
+	
+	tdata = $('<tr><td></td></tr>').children('td');
+	tdata.text('임시 글쓰기 페이지');
+	tdata.css('font-size','30px');
+	tdata.end().appendTo(frame);
+	
+	tdata = $('<tr><td></td></tr>').children('td');
+	$('<input type="button" value="쓰기(미구현)" onClick="sendArticle();">').appendTo(tdata);
+	$('<input type="button" value="닫기" onClick="closeWriteWindow();">').appendTo(tdata);
+	tdata.end().appendTo(frame);
+	
+	tdata = $('<tr><td></td></tr>').children('td');
+	//$('<input class="in_body" type="text" value="미구현">').appendTo(tdata);
+	$('<textarea rows="25" cols="80" name="in_body">미구현</textarea>').appendTo(tdata);
+	tdata.end().appendTo(frame);
+	*/
+	var frame = $('<td></td>');
+	frame.attr('class','writewindow');
+	$('<input type="text" value="제목" class="title"><p>').appendTo(frame);
+	$('<input type="text" value="이름" class="user"><p>').appendTo(frame);
+	$('<input type="text" value="pw" class="pw"><p>').appendTo(frame);
+	$('<textarea rows="5" cols="30" class="body">샘플입력</textarea><p>').appendTo(frame);
+	var wbtn = $('<input type="button" value="질문쓰기"><p>')
+	wbtn.click(function(){
+		var vmap = {};
+		vmap['title'] = frame.find('.title').val();
+		vmap['user'] = frame.find('.user').val();
+		vmap['pw'] = frame.find('.pw').val();
+		vmap['body'] = frame.find('.body').val();
+
+		insertQuestion(vmap);
+		//$('.qaset').empty();
+		$('.qaset').remove();
+		selectQuestion();
+		closeWriteWindow();
+	});
+	wbtn.appendTo(frame);
+	
+	var xbtn = $('<input type="button" value="닫기"><p>')
+	xbtn.click(function(){
+		closeWriteWindow();
+	});
+	xbtn.appendTo(frame);
+	
+	return frame;
+}
+
+function drawSearchFrame(){
+	var tdata;
+	
+	frame = $('<table></table>');
+	frame.attr('class','searchwindow');
+	
+	tdata = $('<tr><td></td></tr>').children('td');
+	tdata.attr('height','20px');
+	tdata.end().appendTo(frame);
+	
+	tdata = $('<tr><td></td></tr>').children('td');
+	tdata.html('글 표시 수');
+	tdata.end().appendTo(frame);
+	
+	tdata = $('<tr><td></td></tr>').children('td');
+	var selectbox = '<select class="limiter" onChange="javascript:changeLimiter(this)">'
+		+ '<option value="1">1 개</option>'
+		+ '<option value="3">3 개</option>'
+		+ '<option value="5" selected="selected">5 개</option>'
+		+ '<option value="10">10 개</option>'
+		+ '<option value="15">15 개</option>'
+		+ '<option value="20">20 개</option>'
+		+ '</select>';
+	$(selectbox).appendTo(tdata);
+	//$('<input type="text" class="searchkey">').appendTo(tdata);
+	//$('<input type="button" value="검색" onClick="searchFunc();">').appendTo(tdata);
+	tdata.end().appendTo(frame);
+	
+	tdata = $('<tr><td></td></tr>').children('td');
+	tdata.attr('height','20px');
+	tdata.end().appendTo(frame);
+	
+	tdata = $('<tr><td></td></tr>').children('td');
+	tdata.html('검색');
+	tdata.end().appendTo(frame);
+	
+	tdata = $('<tr><td></td></tr>').children('td');
+	/*
+	<select class="selection">
+	<option value="title">제목</option>
+	<option value="user" selected>작성자</option>
+	<option value="body">내용</option>
+	</select>
+	*/
+	var selectbox = '<select class="selection">'
+		+ '<option value="title" selected="selected">제목</option>'
+		+ '<option value="user">작성자</option>'
+		+ '<option value="body">내용</option>'
+		+ '</select>';
+	$(selectbox).appendTo(tdata);
+	$('<input type="text" class="searchkey">').appendTo(tdata);
+	$('<input type="button" value="검색" onClick="searchFunc();">').appendTo(tdata);
+	tdata.end().appendTo(frame);
+	
+	tdata = $('<tr><td></td></tr>').children('td');
+	tdata.attr('height','20px');
+	tdata.end().appendTo(frame);
+	
+	return frame;	
+}
+
+function changeLimiter(obj){
+	//alert("글수 변경");
+	this.limiter = parseInt($(obj).val());
+	//$('.qaset').empty();
+	$('.qaset').remove();
+	selectQuestion();
+}
+function searchFunc(){
+	tableframe.empty();
+	//tableframe.remove();
+	this.searchkey = $('.searchwindow').find('.searchkey').val();
+	//alert(this.searchkey == "");
+	//alert(this.searchkey.length);
+	
+	selectQuestion();
+}
+
+function testOBJ(po){
+	//alert(	$(po).show()	);
+	////alert($('this'));
+}
+function testHideA(index){
+	$('.qaset:eq(' + index +')').find('.answindow').hide();
+}
+function testShowA(index){
+	$('.qaset:eq(' + index +')').find('.answindow').show();
+}
+
+
+function makeActionBtn(text, callfunc){
+	var btn = $('<input type="button" value="' + text + '" onClick="' + callfunc +'">')
+	return btn;
+}
+
+function drawTableFrame(){
+	var tableframe = $('<table></table>');
+	tableframe.attr('class','tableframe')
+	return tableframe;
+}
+
+function drawUnderbar(){
+	var underbar = $('<table width=100%><tr><td><br><br></td></tr><tr class="underbar"></tr></table>').find('.underbar');
+	underbar.css('text-align','center');
+	var tdata;
+	
+	tdata = $('<td></td>');
+	tdata.attr('class','curpage');
+	tdata.css('width','30%')
+	tdata.appendTo(underbar);
+	
+	tdata = $('<td>처음</td>');
+	tdata.attr('class','firstpageview');
+	tdata.css('text-align','right');
+	tdata.click(function(){
+		//$('.qaset').empty();
+		$('.qaset').remove();
+		selectQuestion();
+	});
+	tdata.appendTo(underbar);
+	
+	tdata = $('<td></td>');
+	tdata.attr('class','pagejumpview');
+	tdata.appendTo(underbar);
+	
+	tdata = $('<td>마지막</td>');
+	tdata.attr('class','firstpageview');
+	tdata.css('text-align','left');
+	tdata.click(function(){
+		var jumppage = $('.underbar').find('.curpage').find('.allvalue').html();
+		var curpage = $('.underbar').find('.curpage').find('.curvalue').html();
+		
+		var move = jumppage - curpage;
+		selectQuestion(move);
+	});
+	tdata.appendTo(underbar);
+	
+	tdata = $('<td></td>');
+	tdata.css('width','30%')
+	tdata.appendTo(underbar);
+	
+	return underbar.end();
+}
+
+function updateUnderbar(){
+	var getno = $('.qaset').first().find('.no').html();
+	var max = -1;
+	var remainnext = -1;
+	var remainprev = -1;
+	var searchkey = this.searchkey;
+	var selection = $('.selection').val();
+	
+	var dbhandle = openDatabase('qaboard', '1', 'qaboard database', 2 * 1024 * 1024);
+	
+	dbhandle.transaction(function (tx) {
+		var context = 'SELECT COUNT(no) FROM que';
+		if(searchkey.length != 0) context += ' WHERE ' + selection + ' LIKE "%' + searchkey +'%"';
+		
+		tx.executeSql(context, [],function(tx,result){
+			max = result.rows.item(0)['COUNT(no)'];
+			
+			var context = 'SELECT COUNT(no) FROM que WHERE no > ' +getno;
+			if(searchkey.length != 0) context += ' AND ' + selection + ' LIKE "%' + searchkey +'%"';
+			////alert(context);
+			
+			tx.executeSql(context, [],function(tx,result){
+				remainprev =  result.rows.item(0)['COUNT(no)'];
+								
+				var context = 'SELECT COUNT(no) FROM que WHERE no < ' +getno;
+				if(searchkey.length != 0) context += ' AND ' + selection + ' LIKE "%' + searchkey +'%"';
+				
+				////alert(context);
+				tx.executeSql(context, [],function(tx,result){
+					remainnext = result.rows.item(0)['COUNT(no)'];	
+					//alert("MAX =" + max + "/ REMAINNEXT = " + remainnext + "/ REMAINPREV = " + remainprev);
+					
+					var allpage = Math.ceil(max / this.limiter);
+					
+					
+					var curpage = Math.ceil((max - remainnext) / this.limiter);
+					if(remainprev % this.limiter != 0) curpage++;
+					
+					this.curpage = curpage;
+					
+					$('.underbar').find('.curpage').html('현재 <a class="curvalue">' + curpage + '</a>페이지 / 총 <a class="allvalue">' + allpage + '</a>페이지');
+					
+					var pagejumpstart = curpage - 3;
+					if(pagejumpstart < 1) pagejumpstart = 1;
+					pagejumpend = pagejumpstart + 7;
+					if(pagejumpend > allpage){
+						pagejumpend = allpage;
+						pagejumpstart = allpage - 7;
+						if(pagejumpstart < 1) pagejumpstart = 1;
+					}
+					
+					$('.underbar').find('.pagejumpview').empty();
+					//$('.underbar').find('.pagejumpview').remove();
+					
+					for(i = pagejumpstart; i <= pagejumpend; i++){
+						var tagset = $('<a></a>');
+						tagset.html(' ' + i + ' ');
+						if(i == curpage){
+							tagset.css('font-weight','bold');
+							tagset.css('font-size','15px');
+							tagset.css('color','#DD0000');
+						}else{
+							tagset.click(function(){
+								var jumppage = parseInt($(this).html());
+								var curpage = $('.underbar').find('.curpage').find('.curvalue').html();
+								
+								var move = jumppage - curpage;
+								if(move < 0){
+									//alert(Math.abs(move));
+									selectQuestionBack(Math.abs(move));
+								}else{
+									selectQuestion(move);
+								}
+							});
+						}
+						tagset.appendTo($('.underbar').find('.pagejumpview'));
+						if(i >= allpage) break;
+					}
+					
+					
+				}); //end callback
+			}); //end callback
+		}); //end callback
+	});
+	
+}
+
+
+function drawTableQ(){
+	var tdata;
+	var pointer;
+	
+	var table = drawTable();
+	table.attr('class','quewindow');
+	
+	//aaaaa
+	var firstline = table.find('.first');
+	tdata = $('<th></th>');
+	tdata.attr('width','40');
+	tdata.html('<a class="modifybtn">수정</a>');
+	tdata.click(function(){ //수정 버튼 핸들러		
+		var parent = $(this).parent().parent();
+	
+		parent.find('.modifybtn').hide();
+		parent.find('.deletebtn').hide();
+	
+		var getno = parent.find('.no').html();
+		var title = parent.find('.title');
+		var title_text = parent.find('.title').html();
+		var body = parent.find('.body');
+		var body_text = parent.find('.body').html();
+		
+		title.empty();
+		$('<p align="center">제목</p>').appendTo(title);
+		$('<p align="left">&emsp;&emsp;<input size="80" type="text" class="title_input"></p>').appendTo(title);
+		$('.title').find('.title_input').val(title_text);
+		
+		body.empty();
+		$('<p align="center">내용</p>').appendTo(body);
+		$('<p align="center"><textarea rows="10" cols="80" class="body_input"></textarea></p>').appendTo(body);
+		$('.body').find('.body_input').val(body_text);
+		
+		var underbar = $('<p align="center"><a class="modify">완료</a>&emsp;&emsp;&emsp;<a class="close">취소</a></p>');
+		
+		
+		
+		underbar.find('.modify').click(function(){
+			var vmap = {};
+			//alert($('.title_input').val());
+			//alert($('.body_input').val());
+			vmap['title'] = $('.title_input').val();
+			vmap['body'] = $('.body_input').val();
+			
+			updateQuestion(vmap, parent);
+			
+			parent.find('.modifybtn').show();
+			parent.find('.deletebtn').show();
+		});
+		underbar.find('.close').click(function(){
+			//alert('close');
+			title.empty();
+			title.html(title_text);
+			body.empty();
+			body.html(body_text);
+			
+			parent.find('.modifybtn').show();
+			parent.find('.deletebtn').show();
+		});
+		underbar.appendTo(body);
+		
+		
+	
+		//alert('게시글 번호 : ' + getno);
+	});
+	tdata.appendTo(firstline);
+	
+	tdata = $('<th></th>');
+	tdata.attr('width','30');
+	tdata.html('<a class="deletebtn">삭제</a>');
+	tdata.click(function(){ //삭제버튼 핸들러
+		var getno = $(this).parent().parent().find('.no').html();
+		//alert('게시글 번호 : ' + getno);
+		deleteQuestion(getno);
+	});
+	tdata.appendTo(firstline);
+	//aaaaa
+	
+	pointer = table.find('.first').children().first();
+	pointer.text('Q');
+	
+	trow = $('<tr></tr>');
+	trow.attr('class','under');
+	
+	tdata = $('<td></td>');
+	tdata.attr('colspan','10');
+	
+	var temp = $('<a class="cn" style="display:none"></a>');
+	temp.appendTo(tdata);
+	
+	var temp = $('<a class="replyco"></a>');
+	temp.html("총 " + "#" + "개의 답변이 있습니다. ");
+	temp.appendTo(tdata);
+	
+	var temp = $('<a></a>');
+	temp.attr('class','answeropen');
+	temp.text(" (펼쳐보기) ");
+	temp.click(function(){
+		var getno = $(this).parent().parent().parent().find('.no').html();
+		////alert('게시글 번호 : ' + getno);
+		
+		selectAnswer($(this).parent(), getno);
+		$(this).hide();
+		$(this).parent().find('.answerclose').show();
+	});
+	temp.appendTo(tdata);
+	
+	var temp = $('<a></a>');
+	temp.attr('class','answerclose');
+	temp.text(" (답변닫기) ");
+	temp.click(function(){
+		var getno = $(this).parent().parent().parent().find('.no').html();
+		////alert('게시글 번호 : ' + getno);
+		
+		////alert($(this).parent().find('.answindow').html());
+		//$(this).parent().find('.answindow').empty();
+		$(this).parent().find('.answindow').remove();
+		$(this).hide();
+		$(this).parent().find('.answeropen').show();
+	});
+	temp.hide();
+	temp.appendTo(tdata);
+	
+	temp = $('<a></a>')
+	temp.text(" (새 답변 작성) ");
+	temp.click(function(){
+		var getno = $(this).parent().parent().parent().find('.no').html();
+		var underbar = $(this).parent().parent().parent().find('.under');
+		//alert(underbar.html());
+		
+		//alert(drawAnswerWriteWindow().html());
+		$(this).after(drawAnswerWriteWindow(getno));
+		////alert('게시글 번호 : ' + getno);
+	});
+	temp.appendTo(tdata);
+	
+	tdata.appendTo(trow);
+	trow.appendTo(table);
+	
+	
+	return table;
+}
+
+function drawTableA(){
+	////alert("A");
+	var tdata;
+	var table = drawTable();
+	table.attr('class','answindow');
+	
+	//aaaaa
+	var firstline = table.find('.first');
+	tdata = $('<th></th>');
+	tdata.attr('width','40');
+	tdata.html('<a class="modifybtn">수정</a>');
+	tdata.click(function(){ //수정 버튼 핸들러
+		var parent = $(this).parent().parent();
+		parent.find('.modifybtn').hide();
+		parent.find('.deletebtn').hide();
+	
+		var getno = parent.find('.no').html();
+		var title = parent.find('.title');
+		var title_text = parent.find('.title').html();
+		var body = parent.find('.body');
+		var body_text = parent.find('.body').html();
+		
+		title.empty();
+		$('<p align="center">제목</p>').appendTo(title);
+		$('<p align="left">&emsp;&emsp;<input size="75" type="text" class="title_input"></p>').appendTo(title);
+		$('.title').find('.title_input').val(title_text);
+		
+		body.empty();
+		$('<p align="center">내용</p>').appendTo(body);
+		$('<p align="center"><textarea rows="10" cols="75" class="body_input"></textarea></p>').appendTo(body);
+		$('.body').find('.body_input').val(body_text);
+		
+		var underbar = $('<p align="center"><a class="modify">완료</a>&emsp;&emsp;&emsp;<a class="close">취소</a></p>');
+		
+		
+		
+		underbar.find('.modify').click(function(){
+			var vmap = {};
+			//alert($('.title_input').val());
+			//alert($('.body_input').val());
+			vmap['title'] = $('.title_input').val();
+			vmap['body'] = $('.body_input').val();
+			
+			updateAnswer(vmap, parent);
+			
+			parent.find('.modifybtn').show();
+			parent.find('.deletebtn').show();
+		});
+		underbar.find('.close').click(function(){
+			//alert('close');
+			title.empty();
+			title.html(title_text);
+			body.empty();
+			body.html(body_text);
+			
+			parent.find('.modifybtn').show();
+			parent.find('.deletebtn').show();
+		});
+		underbar.appendTo(body);
+		
+		
+	
+		//alert('게시글 번호 : ' + getno);
+	});
+	tdata.appendTo(firstline);
+	
+	tdata = $('<th></th>');
+	tdata.attr('width','30');
+	tdata.html('<a class="deletebtn">삭제</a>');
+	tdata.click(function(){ //삭제버튼 핸들러
+		var getno = $(this).parent().parent().find('.no').html();
+		//alert('게시글 번호 : ' + getno);
+		deleteAnswer(getno);
+	});
+	tdata.appendTo(firstline);
+	//aaaaa
+	
+	tdata = $('<th></th>');
+	tdata.attr('class','padding')
+	tdata.attr('width','30');
+	tdata.attr('rowspan','3');
+	
+	var pointer = table.find('.first').children().first();
+	pointer.text('A');
+	pointer.before(tdata);
+	
+	return table;
+}
+
+function drawTable(){
+	
+	var pointer;
+	
+	var table = $('<table></table>');
+	
+	var trow;
+	var tdata;
+	
+	//first line
+	trow = $('<tr class="first"></tr>'); 
+	
+	tdata = $('<th></th>');
+	tdata.attr('width','30');
+	tdata.attr('rowspan','3');
+	//tdata.text('Q or A');
+	tdata.appendTo(trow);
+	
+	tdata = $('<th></th>');
+	tdata.attr('class','title')
+	tdata.attr('colspan','7');
+	tdata.text('null title');
+	tdata.appendTo(trow);
+	
+	/*
+	tdata = $('<th></th>');
+	tdata.attr('width','40');
+	tdata.text('수정');
+	tdata.click(function(){ //수정 버튼 핸들러
+		var getno = $(this).parent().parent().find('.no').html();
+		//alert('게시글 번호 : ' + getno);
+	});
+	tdata.appendTo(trow);
+	
+	tdata = $('<th></th>');
+	tdata.attr('width','30');
+	tdata.text('삭제');
+	tdata.click(function(){ //삭제버튼 핸들러
+		var getno = $(this).parent().parent().find('.no').html();
+		//alert('게시글 번호 : ' + getno);
+		deleteQuestion()
+	});
+	tdata.appendTo(trow);
+	*/
+
+	trow.appendTo(table);
+	
+	//second line
+	trow = $('<tr></tr>');
+	
+	tdata = $('<th></th>');
+	tdata.text('No'); 	
+	tdata.appendTo(trow);
+	
+	tdata = $('<th></th>');
+	tdata.attr('class','no')
+	tdata.text('0'); //numberic 	
+	tdata.appendTo(trow);
+	
+	tdata = $('<th></th>');
+	tdata.text('작성자'); 	
+	tdata.appendTo(trow);
+	
+	tdata = $('<th></th>');
+	tdata.attr('class','user')
+	tdata.attr('colspan','2');
+	tdata.text('ohj12'); //user 	
+	tdata.appendTo(trow);
+	
+	tdata = $('<th></th>');
+	tdata.text('날짜'); 	
+	tdata.appendTo(trow);
+	
+	tdata = $('<th></th>');
+	tdata.attr('class','date')
+	tdata.text('1234-56-78'); //date milis convert 	
+	tdata.appendTo(trow);
+	
+	tdata = $('<th></th>');
+	tdata.text('조회수'); 	
+	tdata.appendTo(trow);
+	
+	tdata = $('<th></th>');
+	tdata.attr('class','read')
+	tdata.attr('width','30');
+	tdata.text('15'); //numberic
+	tdata.appendTo(trow);
+	
+	trow.appendTo(table);
+	
+	//body line
+	trow = $('<tr></tr>');
+	trow.attr('class','alt')
+	
+	tdata = $('<td></td>');
+	tdata.attr('class','body')
+	tdata.attr('colspan','9');
+	tdata.text('test texta'); 	
+	tdata.appendTo(trow);
+
+	trow.appendTo(table);
+	
+	return table;
+}
+
+</script>
+<script type="text/JavaScript"> //db 핸들
+function dbInit(){
+	//alert("dbInit진입");
+	var dbhandle = openDatabase('qaboard', '1', 'qaboard database', 1024 * 1024);
+	
+	
+	var context = 'CREATE TABLE IF NOT EXISTS que('
+	 + 'cn INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,'			
+	 + 'no INTEGER NOT NULL,'
+	 + 'user VARCHAR(20) NOT NULL,'
+	 + 'title VARCHAR(50) NOT NULL,'
+	 + 'body TEXT NOT NULL,'
+	 + 'date INTEGER NOT NULL,'
+	 + 'pw CHAR(4) NOT NULL,'
+	 + 'read INTEGER NOT NULL,'
+	 + 'replyco INTEGER NOT NULL'
+	 + ')';
+	
+	
+	dbhandle.transaction(function (tx) {
+		tx.executeSql(context);
+	});
+	
+	
+	var context2 = 'CREATE TABLE IF NOT EXISTS ans('
+		 + 'cn INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,'	
+		 + 'no INTEGER NOT NULL,'
+		 + 'user VARCHAR(20) NOT NULL,'
+		 + 'title VARCHAR(50) NOT NULL,'
+		 + 'body TEXT NOT NULL,'
+		 + 'date INTEGER NOT NULL,'
+		 + 'pw CHAR(4) NOT NULL,'
+		 + 'read INTEGER NOT NULL,'
+		 + 'refer INTEGER NOT NULL'
+		 + ')';
+		
+	dbhandle.transaction(function (tx) {
+		tx.executeSql(context2);
+	});
+	
+	var context3 = 'CREATE TABLE IF NOT EXISTS seq('
+		 + 'ref VARCHAR(20) NOT NULL PRIMARY KEY,'
+		 + 'count INTEGER NOT NULL'
+		 + ')';
+		
+	dbhandle.transaction(function (tx) {
+		tx.executeSql(context3);
+	});
+	
+	var context4 = 'INSERT INTO seq VALUES("qaboard",0)';
+		
+	dbhandle.transaction(function (tx) {
+		tx.executeSql(context4);
+	});
+	
+	
+	var context5 = 'CREATE TRIGGER IF NOT EXISTS numbering_que AFTER INSERT ON que '
+		+ 'BEGIN '
+		+ 'UPDATE que SET no = (select count from seq where ref="qaboard") WHERE no=-1; ' 
+		+ 'UPDATE seq SET count=count+1; ' 
+		+ 'END;';
+	
+	dbhandle.transaction(function (tx) {
+		tx.executeSql(context5);
+	});
+	
+	
+	var context6 = 'CREATE TRIGGER IF NOT EXISTS numbering_ans AFTER INSERT ON ans '
+		+ 'BEGIN '
+		+ 'UPDATE ans SET no = (select count from seq where ref="qaboard") WHERE no=-1; ' 
+		+ 'UPDATE seq SET count=count+1; '
+		+ 'END;';
+	
+	dbhandle.transaction(function (tx) {
+		tx.executeSql(context6);
+	});
+	
+	var context7 = 'CREATE TRIGGER IF NOT EXISTS cascade_que BEFORE DELETE ON que '
+		+ 'FOR EACH ROW BEGIN '
+		+ 'DELETE FROM ans WHERE refer = OLD.no; '
+		+ 'END;';
+	
+	dbhandle.transaction(function (tx) {
+		tx.executeSql(context7);
+	});
+	
+	
+	var context8 = 'CREATE TRIGGER IF NOT EXISTS replyco_up AFTER INSERT ON ans '
+		+ 'BEGIN '
+		+ 'UPDATE que SET replyco = replyco+1 WHERE no = NEW.refer; '
+		//+ 'UPDATE que SET replyco = replyco+1; '
+		+ 'END;';
+	
+	dbhandle.transaction(function (tx) {
+		tx.executeSql(context8);
+	});
+	
+	var context9 = 'CREATE TRIGGER IF NOT EXISTS replyco_down BEFORE DELETE ON ans '
+		+ 'BEGIN '
+		+ 'UPDATE que SET replyco = replyco-1 WHERE no = OLD.refer; '
+		+ 'END;';
+	
+	dbhandle.transaction(function (tx) {
+		tx.executeSql(context9);
+	});
+	
+	
+}
+function dbDrop(){
+	//alert("dbDrop진입");
+	var dbhandle = openDatabase('qaboard', '1', 'qaboard database', 2 * 1024 * 1024);
+	
+	var context = 'DROP TABLE IF EXISTS que';
+	dbhandle.transaction(function (tx) {
+		tx.executeSql(context);
+	});
+	
+	var context2 = 'DROP TABLE IF EXISTS ans';
+	dbhandle.transaction(function (tx) {
+		tx.executeSql(context2);
+	});
+	
+	var context3 = 'DROP TABLE IF EXISTS seq';
+	dbhandle.transaction(function (tx) {
+		tx.executeSql(context3);
+	});
+}
+
+function deleteQuestion(no){
+	//alert("질문글 삭제 진입");
+	var dbhandle = openDatabase('qaboard', '1', 'qaboard database', 2 * 1024 * 1024);
+	
+	var context = 'DELETE FROM que WHERE no = ' + no;
+	dbhandle.transaction(function (tx) {
+		tx.executeSql(context);
+	});
+	
+	var qasetcount = $('.qaset').length;
+	//alert('qasetcount = ' + qasetcount);
+	if(qasetcount <= 1) selectQuestionBack();
+	else selectQuestionRefresh();
+}
+
+function deleteAnswer(no){
+	//alert("답변글 삭제 진입");
+	var dbhandle = openDatabase('qaboard', '1', 'qaboard database', 2 * 1024 * 1024);
+	
+	var context = 'DELETE FROM ans WHERE no = ' + no;
+	dbhandle.transaction(function (tx) {
+		tx.executeSql(context);
+	});
+	selectQuestionRefresh();
+}
+
+
+function insertQuestion(vmap){
+	//alert("insertQuestion진입");
+	var dbhandle = openDatabase('qaboard', '1', 'qaboard database', 2 * 1024 * 1024);
+	/*
+	var vmap = {};
+	vmap['user'] = 'ohj';
+	vmap['title'] = 'test title';
+	vmap['body'] = 'test body';
+	vmap['date'] = '1234567890';
+	vmap['pw'] = 'testpw';
+	vmap['read'] = '5';
+	*/
+	
+	//var vmap = {};
+	//vmap['user'] = 'ohj' + this.count;
+	//vmap['title'] = 'test title' + this.count;
+	//vmap['body'] = 'test body' + this.count + '\n' + 'test body' + this.count + '\n' + 'test body' + this.count + '\n' + 'test body' + this.count + '\n';
+	vmap['date'] = new Date().getTime();
+	//vmap['pw'] = 'testpw' + this.count;
+	vmap['read'] = '0';
+	vmap['replyco'] = '0';
+	this.count++;
+
+	
+	dbhandle.transaction(function (tx) {
+		var context = 'INSERT INTO que VALUES('
+			+ 'null, ' 
+			+ '-1, "' 
+			+ vmap['user'] + '","' 
+			+ vmap['title'] + '", "' 
+			+ vmap['body'] + '", '
+			+ vmap['date'] +', "' 
+			+ vmap['pw'] + '", '
+			+ vmap['read'] +', ' 
+			+ vmap['replyco'] +')';
+		
+		tx.executeSql(context,[],function(){
+			selectQuestionRefresh();
+		});
+	});
+
+}
+function insertAnswer(vmap){
+	//alert("insertAnswer진입");
+	var dbhandle = openDatabase('qaboard', '1', 'qaboard database', 2 * 1024 * 1024);
+	/*
+	var vmap = {};
+	vmap['user'] = 'ohj';
+	vmap['title'] = 'test title';
+	vmap['body'] = 'test body';
+	vmap['date'] = '1234567890';
+	vmap['pw'] = 'testpw';
+	vmap['read'] = '5';
+	*/
+	
+	//vmap['user'] = 'ohj' + this.count;
+	//vmap['title'] = 'test title' + this.count;
+	//vmap['body'] = 'test body' + this.count + '\n' + 'test body' + this.count + '\n' + 'test body' + this.count + '\n' + 'test body' + this.count + '\n';
+	vmap['date'] = new Date().getTime();
+	//vmap['pw'] = 'testpw' + this.count;
+	vmap['read'] = '0';
+	//vmap['refer'] = refer;
+	this.count++;
+
+	//alert(vmap['refer']);
+	
+	dbhandle.transaction(function (tx) {
+		var context = 'INSERT INTO ans VALUES('
+			+ 'null, ' 
+			+ '-1, "' 
+			+ vmap['user'] + '","' 
+			+ vmap['title'] + '", "' 
+			+ vmap['body'] + '", '
+			+ vmap['date'] +', "' 
+			+ vmap['pw'] + '", '
+			+ vmap['read'] +', ' 
+			+ vmap['refer'] +')';
+		
+		tx.executeSql(context,[],function(){
+			selectQuestionRefresh();
+		});
+	});
+
+}
+
+
+function updateQuestion(vmap, pointer){
+	var targetno = pointer.find('.no').html();
+	////alert("targetno=" + targetno);
+	var dbhandle = openDatabase('qaboard', '1', 'qaboard database', 2 * 1024 * 1024);
+	/*
+	var vmap = {};
+	vmap['user'] = 'ohj';
+	vmap['title'] = 'test title';
+	vmap['body'] = 'test body';
+	vmap['date'] = '1234567890';
+	vmap['pw'] = 'testpw';
+	vmap['read'] = '5';
+	*/
+	var context = 'UPDATE que SET '
+		+ 'title="' + vmap['title'] + '", ' 
+		+ 'body="' + vmap['body'] + '" '
+		+ 'WHERE no=' + targetno;
+	
+	//alert(context);
+	
+	dbhandle.transaction(function (tx) {
+		tx.executeSql(context,[],function(tx,result){
+			selectQuestionRefresh();
+		});
+	});
+
+}
+function updateAnswer(vmap, pointer){
+	var targetno = pointer.find('.no').html();
+	////alert("targetno=" + targetno);
+	var dbhandle = openDatabase('qaboard', '1', 'qaboard database', 2 * 1024 * 1024);
+	/*
+	var vmap = {};
+	vmap['user'] = 'ohj';
+	vmap['title'] = 'test title';
+	vmap['body'] = 'test body';
+	vmap['date'] = '1234567890';
+	vmap['pw'] = 'testpw';
+	vmap['read'] = '5';
+	*/
+	var context = 'UPDATE ans SET '
+		+ 'title="' + vmap['title'] + '", ' 
+		+ 'body="' + vmap['body'] + '" '
+		+ 'WHERE no=' + targetno;
+	
+	//alert(context);
+	
+	dbhandle.transaction(function (tx) {
+		tx.executeSql(context,[],function(tx,result){
+			selectQuestionRefresh();
+		});
+	});
+}
+
+
+function selectQuestionRefresh(){
+	////alert("selectQuestion진입");
+	var searchkey = this.searchkey;
+	var selection = $('.selection').val();
+	
+	var context;
+	var qaset = $('.qaset');
+	
+	var prev = parseInt(qaset.first().find('.quewindow').find('.no').html());
+	////alert(prev);
+		
+	if(isNaN(prev)){
+		//alert("NAN값 가장 위부터 부름");
+		context = 'SELECT * FROM que';
+		//if(searchkey.length != 0) context += ' WHERE title LIKE "%' + searchkey +'%"';
+		if(searchkey.length != 0) context += ' WHERE ' + selection + ' LIKE "%' + searchkey +'%"';
+		//context += ' ORDER BY no DESC LIMIT 3';
+		context += ' ORDER BY no DESC LIMIT ' + limiter;
+	}else{
+		context = 'SELECT * FROM que WHERE no <= '+ prev
+		//if(searchkey.length != 0) context += ' AND title LIKE "%' + searchkey +'%"';
+		if(searchkey.length != 0) context += ' AND ' + selection + ' LIKE "%' + searchkey +'%"';
+		//context += ' ORDER BY no DESC LIMIT 3';
+		context += ' ORDER BY no DESC LIMIT ' + limiter;
+	}
+	//alert(context);
+	
+	var dbhandle = openDatabase('qaboard', '1', 'qaboard database', 2 * 1024 * 1024);
+	//var qasethandle = $('.qaset');
+	
+	
+	dbhandle.transaction(function (tx) {
+		tx.executeSql(context, [],function(tx,result){
+				var rows = result.rows;
+				var pointer;
+				
+				if(rows.length == 0) return;
+	
+				tableframe.empty();
+				//tableframe.remove();	
+				//alert("리프레시 = " + rows.length);
+				for(var i = 0; i < rows.length; i++){
+					//var quewindow = qasethandle.eq(i).find('.quewindow');
+					var rowitem = rows.item(i);
+					////alert(qasethandle.get(i).hasChildNodes());
+					
+					/*
+					//alert(
+						rowitem['no'] + ' / ' 
+						+ rowitem['user'] + ' / ' 
+						+ rowitem['title'] + ' / ' 
+						+ rowitem['body'] + ' / ' 
+						+ rowitem['date'] + ' / ' 
+						+ rowitem['pw'] + ' / ' 
+						+ rowitem['read']
+					);//end alert
+					*/
+					
+					var set = $('<tr><td></td></tr>').appendTo(tableframe);
+					set.attr('class','qaset');
+					
+					var quewindow = drawTableQ().appendTo(set);
+					
+					quewindow.find('.title').text(rowitem['title']);
+					quewindow.find('.no').text(rowitem['no']);
+					quewindow.find('.user').text(rowitem['user']);
+					
+					var date = new Date(parseInt(rowitem['date']));
+					quewindow.find('.date').text(date.toLocaleString());
+					//quewindow.find('.date').text(rowitem['date']);
+					quewindow.find('.read').text(rowitem['read']);
+					quewindow.find('.body').html(rowitem['body'].replace(/\n/gi, "<br>"));
+					////alert(quewindow.html());
+					var replycotext = "총 " + rowitem['replyco'] + "개의 답변이 있습니다. ";
+					quewindow.find('.replyco').text(replycotext);
+					quewindow.find('.cn').text(rowitem['cn']);
+					////alert("cn = " + quewindow.find('.no').text());
+				}
+				updateUnderbar();
+		
+			} //end callback
+		);
+	});
+
+}
+
+
+function selectQuestionBack(jumpcount){
+	////alert("selectQuestion진입");
+	var searchkey = this.searchkey;
+	var selection = $('.selection').val();
+	var limiter = this.limiter;
+	var range = limiter * (isNaN(jumpcount) ? 1 : jumpcount);
+	////alert("range = " + range)
+	
+	var context;
+	var qaset = $('.qaset');
+	
+	var prev = parseInt(qaset.first().find('.quewindow').find('.no').html());
+	////alert(prev);
+		
+	if(isNaN(prev)){
+		//alert("NAN값 가장 위부터 부름");
+		context = 'SELECT * FROM que';
+		//if(searchkey.length != 0) context += ' WHERE title LIKE "%' + searchkey +'%"';
+		if(searchkey.length != 0) context += ' WHERE ' + selection + ' LIKE "%' + searchkey +'%"';
+		//context += ' ORDER BY no DESC LIMIT 3';
+		context += ' ORDER BY no DESC LIMIT ' + range;
+		return;
+	}else{
+		context = 'SELECT * FROM que WHERE no > '+ prev;
+		//if(searchkey.length != 0) context += ' AND title LIKE "%' + searchkey +'%"';
+		if(searchkey.length != 0) context += ' AND ' + selection + ' LIKE "%' + searchkey +'%"';
+		//context += ' LIMIT 3';
+		context += ' LIMIT ' + range;
+	}
+	//alert(context);
+	
+	var dbhandle = openDatabase('qaboard', '1', 'qaboard database', 2 * 1024 * 1024);
+	//var qasethandle = $('.qaset');
+	
+	
+	dbhandle.transaction(function (tx) {
+		tx.executeSql(context, [],function(tx,result){
+				var rows = result.rows;
+				var pointer;
+				
+				if(rows.length == 0) return;
+				tableframe.empty();
+				//tableframe.remove();
+				
+				if(rows.length < range){
+					selectQuestion();
+					return;
+				}
+				
+				var temp = "";
+				for(var i = 0; i < rows.length; i++){
+					temp += rows.item(i)['title'] + "\n";
+				}
+				//alert(temp);
+				
+				var top = range-1;
+				var cutpoint = range-this.limiter;
+				for(var i = top; i >= cutpoint; i--){
+				//for(var i = rows.length; i >= 0; i--){
+					//var quewindow = qasethandle.eq(i).find('.quewindow');
+					var rowitem = rows.item(i);
+					////alert(qasethandle.get(i).hasChildNodes());
+					
+					/*
+					//alert(
+						rowitem['no'] + ' / ' 
+						+ rowitem['user'] + ' / ' 
+						+ rowitem['title'] + ' / ' 
+						+ rowitem['body'] + ' / ' 
+						+ rowitem['date'] + ' / ' 
+						+ rowitem['pw'] + ' / ' 
+						+ rowitem['read']
+					);//end alert
+					*/
+					
+					var set = $('<tr><td></td></tr>').appendTo(tableframe);
+					set.attr('class','qaset');
+					
+					var quewindow = drawTableQ().appendTo(set);
+					
+					quewindow.find('.title').text(rowitem['title']);
+					quewindow.find('.no').text(rowitem['no']);
+					quewindow.find('.user').text(rowitem['user']);
+					
+					var date = new Date(parseInt(rowitem['date']));
+					quewindow.find('.date').text(date.toLocaleString());
+					//quewindow.find('.date').text(rowitem['date']);
+					quewindow.find('.read').text(rowitem['read']);
+					quewindow.find('.body').html(rowitem['body'].replace(/\n/gi, "<br>"));
+					////alert(quewindow.html());
+					var replycotext = "총 " + rowitem['replyco'] + "개의 답변이 있습니다. ";
+					quewindow.find('.replyco').text(replycotext);
+					quewindow.find('.cn').text(rowitem['cn']);
+					////alert("cn = " + quewindow.find('.no').text());
+				}
+				updateUnderbar();
+			
+			} //end callback
+		);
+	});
+}
+
+
+function selectQuestion(jumpcount){
+	var searchkey = this.searchkey;
+	var selection = $('.selection').val();
+	var limiter = this.limiter;
+	var range = limiter * (isNaN(jumpcount) ? 1 : jumpcount);
+	//alert("selectQuestion진입 = " + searchkey + " / " + selection);
+	
+	var context;
+	var qaset = $('.qaset');
+	
+	var next = parseInt(qaset.last().find('.quewindow').find('.no').html());
+	////alert(next);
+	
+	if(isNaN(next)){
+		////alert("NAN값 가장 위부터 부름");
+		//context = 'SELECT * FROM que ORDER BY no DESC LIMIT 3';
+		context = 'SELECT * FROM que';
+		if(searchkey.length != 0) context += ' WHERE ' + selection + ' LIKE "%' + searchkey +'%"';
+		//context += ' ORDER BY no DESC LIMIT 3';
+		context += ' ORDER BY no DESC LIMIT ' + range;
+	}else{
+		context = 'SELECT * FROM que WHERE no < ' + next;
+		if(searchkey.length != 0) context += ' AND ' + selection + ' LIKE "%' + searchkey +'%"';
+		context += ' ORDER BY no DESC LIMIT ' + range;
+		//context += ' ORDER BY no DESC LIMIT 3';
+	}
+	//alert(context);
+	
+	var dbhandle = openDatabase('qaboard', '1', 'qaboard database', 2 * 1024 * 1024);
+	//var qasethandle = $('.qaset');
+	
+	
+	dbhandle.transaction(function (tx) {
+		tx.executeSql(context, [],function(tx,result){
+				var rows = result.rows;
+				var pointer;
+				
+				if(rows.length == 0) return;
+				//alert("range : " + range + "\nlimiter : " + limiter + "\nlength : " + rows.length);
+				
+				tableframe.empty();
+				//tableframe.remove();
+				
+				var start;
+				var end;
+				
+				if(rows.length < limiter){
+					//alert('rows.length < limiter');
+					start = 0;
+					end = rows.length;
+				}
+				else if(rows.length < range-limiter){
+					//alert('rows.length < range-limiter');
+					var count = rows.length % limiter;
+					start = rows.length - count;
+					end = rows.length;
+				}
+				else if(rows.length < range){
+					//alert('rows.length < range');
+					start = range - limiter;
+					end = range - (range - rows.length);
+				}else{
+					//alert('else');
+					start = range - limiter;
+					end = range;
+				}
+				
+				//alert("시작종료"+ " / " + start + " - " + end);
+				
+				for(var i = start; i < end; i++){
+				//for(var i = 0; i < rows.length; i++){
+					//var quewindow = qasethandle.eq(i).find('.quewindow');
+					var rowitem = rows.item(i);
+					////alert(qasethandle.get(i).hasChildNodes());
+					
+					/*
+					//alert(
+						rowitem['no'] + ' / ' 
+						+ rowitem['user'] + ' / ' 
+						+ rowitem['title'] + ' / ' 
+						+ rowitem['body'] + ' / ' 
+						+ rowitem['date'] + ' / ' 
+						+ rowitem['pw'] + ' / ' 
+						+ rowitem['read']
+					);//end alert
+					*/
+					
+					var set = $('<tr><td></td></tr>').appendTo(tableframe);
+					set.attr('class','qaset');
+					
+					var quewindow = drawTableQ().appendTo(set);
+					
+					quewindow.find('.title').text(rowitem['title']);
+					quewindow.find('.no').text(rowitem['no']);
+					quewindow.find('.user').text(rowitem['user']);
+					
+					var date = new Date(parseInt(rowitem['date']));
+					quewindow.find('.date').text(date.toLocaleString());
+					//quewindow.find('.date').text(rowitem['date']);
+					
+					quewindow.find('.read').text(rowitem['read']);
+					quewindow.find('.body').html(rowitem['body'].replace(/\n/gi, "<br>"));
+					////alert(quewindow.html());
+					var replycotext = "총 " + rowitem['replyco'] + "개의 답변이 있습니다. ";
+					quewindow.find('.replyco').text(replycotext);
+					quewindow.find('.cn').text(rowitem['cn']);
+					////alert("cn = " + quewindow.find('.no').text());
+					
+				}
+				updateUnderbar();
+			} //end callback
+		);
+	});
+}
+
+function selectAnswer(qaset, refer){
+	//alert("selectAnswer진입");
+
+	var dbhandle = openDatabase('qaboard', '1', 'qaboard database', 2 * 1024 * 1024);
+	var qasethandle = $('.qaset');
+	
+	
+	dbhandle.transaction(function (tx) {
+		tx.executeSql('SELECT * FROM ans WHERE refer='+ refer + ' ORDER BY no DESC', [],function(tx,result){
+				var rows = result.rows;
+				var pointer;
+				for(var i = 0; i < rows.length; i++){
+					//var answindow = qasethandle.eq(i).find('.answindow');
+					var rowitem = rows.item(i);
+					var answindow = drawTableA().appendTo(qaset);
+					////alert(qasethandle.get(i).hasChildNodes());
+					
+					/*
+					//alert(
+						rowitem['no'] + ' / ' 
+						+ rowitem['user'] + ' / ' 
+						+ rowitem['title'] + ' / ' 
+						+ rowitem['body'] + ' / ' 
+						+ rowitem['date'] + ' / ' 
+						+ rowitem['pw'] + ' / ' 
+						+ rowitem['read'] + ' / ' 
+						+ rowitem['refer']
+					);//end alert
+					*/
+					
+					answindow.find('.title').text(rowitem['title']);
+					answindow.find('.no').text(rowitem['no']);
+					answindow.find('.user').text(rowitem['user']);
+					
+					var date = new Date(parseInt(rowitem['date']));
+					answindow.find('.date').text(date.toLocaleString());
+					//answindow.find('.date').text(rowitem['date']);
+					answindow.find('.read').text(rowitem['read']);
+					answindow.find('.body').html(rowitem['body'].replace(/\n/gi, "<br>"));
+					
+					
+				}
+		
+			} //end callback
+		);
+	});
+}
+
+ 
+</script>
+</body>
+</html>
+ 

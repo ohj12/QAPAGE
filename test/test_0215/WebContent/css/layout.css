@@ -1,0 +1,41 @@
+@CHARSET "EUC-KR";
+*{ margin:0; padding:0;}
+	body{ text-align:center; color:#FFF; background:#DDDDDD;}
+
+	div#wapper{ text-align:left; width:1000px; margin:0 auto; }
+	header, footer, nav, aside, section, article {
+		display:block; 
+	}
+	header, nav, footer{
+		width:100%;
+	}
+	aside{
+		width:290px;
+		height:100%;
+		margin-left:10px;
+		float:right;
+	}
+	section {
+		font-size:11px;
+		margin-bottom:10px;
+		width:700px;
+		float:left;
+	}
+	header, footer, nav, aside, section{
+		margin-top:10px;
+	}
+	
+	header, nav, aside, section, footer {
+		background-color: #666;
+	}
+	
+	footer {
+		clear:both;
+		/* asdie와 section을 float시켰기
+		째문에 그아래위치하도록 clear*/
+	}
+	article {
+		width:95%;
+		margin:20px;
+		background-color: #999;
+	}
