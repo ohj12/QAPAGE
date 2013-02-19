@@ -1,0 +1,153 @@
+@CHARSET "EUC-KR";
+
+	.emp_red{
+		font-weight: bold;
+		font-size: 15px;
+		color: #DD0000;
+	}
+
+	table{
+		border-collapse: collapse;
+	}
+	
+	#articleviewframe{
+		border-collapse: separate;
+	}
+		
+		table.quewindow {
+         width: 655px;
+         font-family: 'Trebuchet MS';
+       }
+       table.quewindow td, th {
+         border: 0px solid #98bf21;
+         padding-left: 20px;
+         height: 30px;
+       }
+       table.quewindow th {
+       	 text-valign: bottom;
+       	 height: 20px;
+         color: #A89489;
+        
+       }
+       table.quewindow tr.alt td {
+         color: #000000;
+         
+       }
+       table.quewindow tr.under td {
+         height: 8px;
+         background-color: #EEE;
+       }
+       
+       table.answindow {
+       	 padding-left: 20px;
+       	 text-align: left;
+         width: 655px;
+         font-family: 'Trebuchet MS';
+       }
+       table.answindow td, th {
+         border: 0px solid #98bf21;
+         height: 30px;
+       }
+       table.answindow th {
+         height: 20px;
+         background-color: #FFF;
+         color: #A89489;
+         
+       }
+       table.answindow tr.alt td {
+         color: #000000;
+         background-color: #FFFFFF;
+       }
+       table.answindow tr.answindowwerbar td {
+         height: 8px;
+         background-color: #FFAAAA;
+       }
+       
+       table.answindow tr th.padding{
+       		padding-left: 5px;
+		
+		}
+		
+		
+		table.answerwritewindow{
+       		width: 100%;
+			text-align: left;
+		}
+		
+		table.answerwritewindow tr td.bar{
+			text-align: center;
+			color: #FFF;
+			background-color: #77655B;
+		}
+		
+		table.answerwritewindow td.item{
+			text-align: center;
+		}
+		
+		
+		
+		table.writewindow{
+       		width: 100%;
+			text-align: left;
+		}
+		
+		table.writewindow tr td.bar{
+			text-align: center;
+			color: #FFF;
+			background-color: #77655B;
+		}
+		
+		table.writewindow td.item{
+			text-align: center;
+		}
+		
+		#searchframe{
+			width: 100%;
+			
+			
+			border-bottom-color: white;
+			border-bottom-style: dotted;
+			border-bottom-width: 2px;
+		}
+		#searchframe tr.gap{
+			height: 20px;
+		}
+		
+		#pagejumpframe{
+			text-align: center;
+		}
+		#pagejumpframe td.right, td.lastpageview{
+			text-align: left;
+		}
+		#pagejumpframe td.left, td.firstpageview{
+			text-align: right;
+		}
+		#pagejumpframe td.left, td.right{
+			width: 30%;
+		}
+		
+		
+		#statusframe{
+			width: 100%;
+			text-align: left;
+		}
+		#statusframe tr td.head{
+			text-align: center;
+			background-color: #AA55AA;
+			height: 25px;
+		}
+		#statusframe tr td:first-child{
+			padding-left: 10px;
+			width : 80px;
+			height: 20px;
+		}
+		#statusframe tr td.padd{
+			height: 5px;
+		}
+		
+		
+		#LimiterBox{
+			padding-left: 10px;
+			padding-right: 10px;
+		}
+		

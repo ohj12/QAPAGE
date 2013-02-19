@@ -1,0 +1,81 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=euc-kr">
+<title>Test Page</title>
+<link rel="stylesheet" type="text/css" href="css/layout.css"/>
+<link rel="stylesheet" type="text/css" href="css/boardlayout.css"/>
+
+</head>
+<body>
+<!-- test body -->
+
+<div id="wapper">
+
+<!--헤더시작-->
+<header>
+<h1>QABOARD DRAFT PAGE</h1>
+</header>
+<!--네비게이션-->
+<nav>
+</nav>
+<!--사이드바-->
+<aside>
+</aside>
+<!--콘텐츠부분-->
+<section>
+<article>
+</article> 
+</section>
+<!--풋터-->
+<footer>qaboard</footer>
+</div>
+
+<!-- test body -->
+
+<script type="text/JavaScript" src="lib/jquery-1.9.1.js"></script> 
+<script type="text/JavaScript" src="js/framedraw.js"></script> 
+<script type="text/JavaScript" src="js/changecontent.js"></script> 
+<script type="text/JavaScript" src="js/dbcontrol.js"></script>
+
+<script type="text/JavaScript">
+var form1;
+var articleviewframe;
+var writeframe;
+var searchframe;
+var pagejumpframe;
+var statusframe;
+
+var limiter = 3;
+var searchkey = "";
+var curpage = -1;
+
+$(document).ready(function(){
+	$('nav').hide();
+	
+	searchframe = drawSearchFrame().appendTo($('aside'));
+	statusframe = $('<table id="statusframe"></table>').appendTo($('aside'));
+	
+	articleviewframe = $('<table id="articleviewframe"></table>').appendTo($('article'));
+	pagejumpframe = drawPageJumpFrame().appendTo($('article'));
+	
+	writeframe = drawWriteFrame().appendTo($('article'));
+	writeframe.hide();
+	
+	dbInit();
+	selectQuestion(1);
+});
+
+
+function makeActionBtn(text, callfunc){
+	var btn = $('<input type="button" value="' + text + '" onClick="' + callfunc +'">')
+	return btn;
+}
+
+</script>
+</body>
+</html>
+ 
+
+
+
