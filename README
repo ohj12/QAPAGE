@@ -3,7 +3,7 @@
 - 소스 정리
 - 계획서 수정
 
-@ QABoard 페스트 페이지 제작중, 디자인 변경
+@ QABoard 테스트 페이지 제작중, 디자인 변경
 # 2013년 2월 18일
 - 전체적인 디자인 재구상
 - 페이지 관련 기능 보정
@@ -13,7 +13,7 @@
 - /test/test_0218 폴더에 작업물 저장
 .
 
-@ QABoard 페스트 페이지 제작중, javascript 및 jquery, SQLite 학습
+@ QABoard 테스트 페이지 제작중, javascript 및 jquery, SQLite 학습
 # 2013년 2월 15일
 - 페이지 관련 기능 보정 및 추가
 - 검색 결과에도 페이지 계산, 이동 및 점프 구현
@@ -25,7 +25,7 @@
 - /test/test_0215 폴더에 작업물 저장
 .
 
-@ QABoard 페스트 페이지 제작중, javascript 및 jquery, SQLite 학습
+@ QABoard 테스트 페이지 제작중, javascript 및 jquery, SQLite 학습
 # 2013년 2월 14일
 - 날짜 입출력 구현
 - 페이지 구현 보정
@@ -35,7 +35,7 @@
 - CSS 학습
 .
 
-@ QABoard 페스트 페이지 제작중, javascript 및 jquery, SQLite 학습
+@ QABoard 테스트 페이지 제작중, javascript 및 jquery, SQLite 학습
 # 2013년 2월 13일
 - QABoard 기능 구현을 위한 테스트 페이지 제작중
 - DB 구조 일부 변경
@@ -47,7 +47,7 @@
 - test/test_0213 폴더에 작업물 저장
 .
 
-@ QABoard 페스트 페이지 제작중, javascript 및 jquery 학습
+@ QABoard 테스트 페이지 제작중, javascript 및 jquery 학습
 # 2013년 2월 12일
 - QABoard 기능 구현을 위한 테스트 페이지 제작중
 - 대략적인 레이아웃 초안 작성
